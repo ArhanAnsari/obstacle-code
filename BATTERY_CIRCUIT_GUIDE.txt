@@ -1,0 +1,252 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║            BATTERY MONITORING CIRCUIT - SETUP GUIDE                   ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🔋 VOLTAGE DIVIDER FOR BATTERY MONITORING
+═══════════════════════════════════════════════════════════════════════
+
+SIMPLEST METHOD (No external components):
+─────────────────────────────────────────
+
+  Battery +
+    |
+    +----> USB Power  →  Arduino 5V Regulator
+    
+  Arduino reads internal 5V reference
+  ✓ Works but less accurate
+  ✓ No additional components needed
+  ✗ Cannot detect battery voltage dips below 5V
+
+Formula: ADC_Value = (Voltage / 5V) × 1024
+
+
+RECOMMENDED METHOD (Voltage Divider):
+─────────────────────────────────────
+
+For 6-9V batteries with equal resistor divider:
+
+                 +Battery (6-9V)
+                    |
+                    | (RED WIRE)
+                    |
+                  ┌─┴─┐
+                  │   │
+                  │10kΩ│  ← R1 (High impedance)
+                  │   │
+                  └─┬─┘
+                    │
+                    ├────→ A5 (Analog Pin 5)  ← TO ARDUINO
+                    │
+                  ┌─┴─┐
+                  │   │
+                  │10kΩ│  ← R2 (Ground path)
+                  │   │
+                  └─┬─┘
+                    |
+                    | (BLACK WIRE)
+                    |
+                  GND (Battery-)
+
+
+EQUIVALENT SCHEMATIC:
+──────────────────────
+
+        +Vbat
+          |
+          R1
+          |
+     +----+----+  → ADC_Pin (A5)
+     |         |
+     R2       100nF (Optional filter cap)
+     |         |
+     +----+----+
+          |
+          GND
+
+
+DETAILED WIRING:
+────────────────
+
+1. POWER CONNECTIONS:
+   Battery Red   → R1 (first resistor)
+   Battery Black → GND (Arduino ground)
+
+2. RESISTOR CONNECTIONS:
+   R1 → R2 (middle connection goes to A5)
+   Both resistors should be 10kΩ (same value!)
+
+3. A5 PIN CONNECTION:
+   Middle junction (R1-R2) → Arduino A5
+
+4. OPTIONAL: ADD FILTER CAPACITOR
+   Capacitor (100nF) from A5 to GND
+   Smooths reading noise
+
+
+VOLTAGE CALCULATIONS:
+─────────────────────
+
+For 7.4V LiPo Battery (2S):
+
+Divider Formula: V_out = V_in × (R2 / (R1 + R2))
+
+With equal 10kΩ resistors:
+V_out = 7.4V × (10k / 20k) = 3.7V ← Measured at A5
+
+ADC Reading: (3.7V / 5V) × 1024 = 755 (full charge)
+
+
+CHARGING CURVE (7.4V LiPo):
+───────────────────────────
+
+Voltage (V)    ADC Value    Battery Status
+─────────────────────────────────────────
+7.4V           755          Fully Charged ✓
+7.2V           737          Very Good
+7.0V           717          Good
+6.8V           696          Moderate
+6.6V           675          Low ⚠️
+6.4V           655          Very Low ⚠️
+6.2V           635          Critical ⚠️⚠️
+6.0V           614          STOP! ⛔
+
+Current Setting: Threshold = 350 ADC
+This protects battery from dangerous discharge
+
+
+DIFFERENT BATTERY COMBINATIONS:
+───────────────────────────────
+
+6V Battery (4xAA):
+V_out = 6V × 0.5 = 3V (full)
+ADC_full = 614
+Threshold should be ~200 (for 3.6V safety)
+
+9V Battery:
+V_out = 9V × 0.5 = 4.5V (full)
+ADC_full = 921
+Threshold should be ~450 (for 3.3V safety)
+
+11.1V LiPo (3S):
+V_out = 11.1V × 0.5 = 5.55V (exceeds Arduino 5V!)
+⛔ USE DIFFERENT RESISTOR RATIO:
+  - Use 22kΩ for R1 and 10kΩ for R2
+  - V_out = 11.1V × (10k / 32k) = 3.47V ✓
+
+
+TESTING YOUR SETUP:
+───────────────────
+
+1. BUILD THE CIRCUIT:
+   ✓ Connect R1 to battery positive
+   ✓ Connect R2 to ground
+   ✓ Connect middle point to A5
+   ✓ Add capacitor (optional)
+
+2. VERIFY CONNECTIONS:
+   ✓ Check no shorts
+   ✓ Verify resistor values (with multimeter)
+   ✓ Test continuity from battery to Arduino
+
+3. UPLOAD CODE:
+   ✓ Set DEBUG_MODE = true
+   ✓ Upload code to Arduino
+
+4. CHECK SERIAL OUTPUT:
+   Battery ADC: XXX | Estimated: YY%
+   
+   Expected range: 600-1024 (full battery)
+   Below 350 = Low battery warning
+
+5. ADJUST THRESHOLD IF NEEDED:
+   Line 35: const int LOW_BATTERY_THRESHOLD = 350;
+   
+   Modify based on your battery chemistry
+
+
+COMPONENT SHOPPING LIST:
+────────────────────────
+
+Item              Value    Quantity    Purpose
+────────────────────────────────────────────
+Resistor          10kΩ     2          Voltage divider
+Capacitor         100nF    1          Optional filter
+Jumper wires       -        4          Connections
+Solderable proto   -        1          Build circuit
+
+
+COMMON ISSUES:
+──────────────
+
+Issue: Battery reading always shows same value
+→ Check resistor values are correct (10kΩ each)
+→ Verify A5 connection is secure
+→ Test with multimeter at middle junction
+
+Issue: Reading fluctuates wildly
+→ Add 100nF capacitor from A5 to GND
+→ Check for loose connections
+→ Keep battery wire away from motor wires
+
+Issue: No battery warning even when battery low
+→ Adjust LOW_BATTERY_THRESHOLD higher
+→ Verify voltage divider math for your battery
+→ Check A5 pin is reading (debug serial output)
+
+Issue: Arduino won't upload after adding battery circuit
+→ Make sure A5 doesn't exceed 5V
+→ Check GND connection is secure
+→ Remove battery, try again
+
+
+SAFETY NOTES:
+─────────────
+
+⚠️  IMPORTANT:
+  • Never exceed 5V on Arduino analog pins!
+  • Use proper resistor values for your battery
+  • Keep battery wires away from motor wires
+  • Always test with multimeter before connecting
+  • Use fused battery holder for protection
+  • Never discharge LiPo below 3.0V per cell
+
+
+OPTIONAL: DIFFERENT THRESHOLD FOR DIFFERENT BATTERIES
+─────────────────────────────────────────────────────
+
+For 6V (4xAA):
+  const int LOW_BATTERY_THRESHOLD = 200;  // ~3.6V
+
+For 7.4V LiPo:
+  const int LOW_BATTERY_THRESHOLD = 350;  // ~3.4V
+
+For 9V:
+  const int LOW_BATTERY_THRESHOLD = 450;  // ~3.3V
+
+For 11.1V LiPo (with 22k/10k divider):
+  const int LOW_BATTERY_THRESHOLD = 350;  // ~3.2V
+
+
+VERIFICATION CHECKLIST:
+──────────────────────
+
+□ Resistors soldered correctly (10kΩ values verified)
+□ Middle junction goes to A5
+□ Battery positive → R1
+□ Battery negative → GND (Arduino ground)
+□ No shorts between components
+□ Optional capacitor in place
+□ Multimeter confirms middle voltage at ~half battery
+□ Arduino uploads successfully
+□ Serial monitor shows battery readings
+□ Low battery alert works as expected
+□ LED turns on/off with battery status
+
+
+═════════════════════════════════════════════════════════════════════════
+
+Your robot now has smart battery monitoring! 🔋
+
+Happy robotics! 🤖
+
+═════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,159 @@
+🤖 OBSTACLE AVOIDING ROBOT - QUICK START GUIDE 🤖
+
+═══════════════════════════════════════════════════════════════════
+
+📋 WHAT'S NEW IN THIS VERSION:
+
+✨ BATTERY MONITORING
+   • Detects low battery automatically
+   • Alerts with LED and 3 beeps
+   • Shows battery % in Serial monitor
+   • Safe to use with rechargeable batteries
+
+📊 MOVEMENT STATISTICS  
+   • Tracks how far robot has traveled (time-based)
+   • Counts successful maneuvers
+   • Counts failed attempts (stuck detection)
+   • Shows everything in beautiful formatted stats
+
+🔧 HARDWARE SETUP FOR BATTERY MONITORING:
+
+If you want to monitor battery voltage:
+
+   Option 1: Simple (No components)
+   - Connect battery to Arduino 5V/GND
+   - Arduino measures internal 5V regulator
+   - Works but less accurate
+
+   Option 2: Better (Voltage Divider - Recommended)
+   - Use two resistors (e.g., 10kΩ each)
+   - Create voltage divider from battery to GND
+   - Connect midpoint to A5
+   - See BATTERY_SETUP.txt for detailed diagram
+
+   Option 3: Advanced
+   - Use a battery monitoring module (< $5)
+   - Connect analog output to A5
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 QUICK START:
+
+1. Upload the code to Arduino Uno
+2. Power on the robot
+3. Listen for: 1 beep = ready
+4. Connect to Serial Monitor (9600 baud) to see stats
+5. Robot starts obstacle avoidance immediately!
+
+═══════════════════════════════════════════════════════════════════
+
+📱 SERIAL MONITOR OUTPUT:
+
+Distance: 45cm | State: 0 | Battery: 680 | Stuck: 0
+Distance: 42cm | State: 0 | Battery: 680 | Stuck: 0
+>> OBSTACLE DETECTED! Initiating avoidance...
+>> Moving backward...
+>> Scan Results - Center: 12cm | Left: 35cm | Right: 28cm
+>> Turning LEFT
+
+[Every 5 seconds, you'll see full statistics]
+
+═══════════════════════════════════════════════════════════════════
+
+🎵 ROBOT SOUNDS:
+
+1 BEEP      = Startup ready
+2 BEEPS     = Turning
+3 BEEPS     = Low battery alert
+3 + 3 BEEPS = Safe mode activated
+LONG BEEP   = Stuck - attempting recovery
+
+═══════════════════════════════════════════════════════════════════
+
+💡 LED INDICATORS:
+
+ON SOLID       = Low battery warning (stay on until battery recovers)
+OFF            = Normal operation
+BLINKING FAST  = (in future versions)
+
+═══════════════════════════════════════════════════════════════════
+
+⚙️ PERFORMANCE SETTINGS (Easy to Adjust):
+
+FASTER REACTIONS:
+  • Reduce SAFE_DISTANCE to 20cm
+  • Reduce TURN_DELAY to 300ms
+
+SMOOTHER MOVEMENT:
+  • Increase motorSpeed to 200
+  • Increase SERVO_LOOK_DELAY to 200ms
+
+LONGER BATTERY LIFE:
+  • Reduce motorSpeed to 150
+  • Increase battery threshold (more conservative)
+
+MORE DEBUGGING:
+  • Set DEBUG_MODE = true (currently enabled)
+
+═══════════════════════════════════════════════════════════════════
+
+🔧 IF SOMETHING GOES WRONG:
+
+Problem: Robot not moving
+Solution: Check motor connections, adjust motorSpeed
+
+Problem: Constantly stuck in corner
+Solution: Increase BACKWARD_TIME or adjust turning angles
+
+Problem: Not detecting obstacles
+Solution: Check HC-SR04 wiring, clean sensor
+
+Problem: No battery alerts
+Solution: Check A5 connection, verify voltage divider setup
+
+Problem: Serial output garbage
+Solution: Change baud rate to 9600 (already set)
+
+═══════════════════════════════════════════════════════════════════
+
+📊 STATISTICS EXPLAINED:
+
+Session Duration: How long robot has been running
+Total Movement Time: Sum of all forward movement periods
+Total Avoidance Time: Sum of all obstacle avoidance periods
+Successful Moves: Times it resumed forward motion after obstacle
+Failed Avoidances: Times stuck detection triggered (watchdog)
+Battery Level: Raw ADC reading (higher = more battery)
+Current State: 0 = moving, 1 = avoiding obstacle
+Stuck Attempts: How many times recovery was needed
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 TESTING CHECKLIST:
+
+□ Upload code successfully
+□ Robot beeps on startup
+□ Motors spin when powered
+□ HC-SR04 sensor detects obstacles
+□ Robot avoids obstacles smoothly
+□ Turns are natural (not spinning)
+□ LED turns on when battery low
+□ Battery stats show in Serial monitor
+□ All beep patterns work correctly
+
+═══════════════════════════════════════════════════════════════════
+
+🏆 YOUR ROBOT NOW HAS:
+
+✓ Smart obstacle avoidance with 3-way scanning
+✓ Battery monitoring & low voltage alerts
+✓ Movement tracking & statistics
+✓ Stuck detection & automatic recovery
+✓ Smooth differential speed turning
+✓ Speed ramping for natural acceleration
+✓ Comprehensive debugging output
+✓ Optimized for Arduino Uno performance
+
+Ready to see it in action! 🚀
+
+═══════════════════════════════════════════════════════════════════

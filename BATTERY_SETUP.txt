@@ -1,0 +1,55 @@
+========================================
+BATTERY MONITORING SETUP GUIDE
+========================================
+
+Your robot now has battery monitoring capability!
+
+PIN CONFIGURATION:
+- BATTERY_PIN = A5 (Analog Pin 5)
+- Uses voltage divider to measure battery voltage
+
+VOLTAGE DIVIDER SETUP (for 5V supply):
+If your battery is 6-9V, use a voltage divider:
+
+          +Vbat (6-9V)
+             |
+            [R1] (High value, e.g., 10kΩ)
+             |
+            [R2] (Lower value, e.g., 10kΩ) --- Connect to A5
+             |
+            GND
+
+This creates a 1:2 voltage divider, reducing 6-9V to 3-4.5V safe for Arduino.
+
+ADC VALUES (for 5V supply with equal resistors):
+- ADC 1024 = ~10V (max battery)
+- ADC 512  = ~5V (half supply)
+- ADC 350  = ~3.4V (LOW BATTERY THRESHOLD)
+
+CUSTOMIZE THRESHOLD:
+Modify this line in the code for your setup:
+  const int LOW_BATTERY_THRESHOLD = 350;  // Adjust based on your battery
+
+BATTERY ALERTS:
+- LED turns ON when battery is low
+- Triple beep alarm sounds
+- Serial monitor shows "⚠️  LOW BATTERY WARNING!"
+- LED turns OFF when battery recovers (with 50-unit buffer)
+
+TESTING WITHOUT HARDWARE:
+Set DEBUG_MODE = true and monitor Serial output
+- Battery ADC value and percentage shown every 3 seconds
+- Low battery warnings logged
+
+STATISTICS TRACKING:
+The robot now tracks:
+- Total movement time
+- Total avoidance time
+- Number of successful moves
+- Number of failed avoidances (stuck attempts)
+- Current battery level
+- Stuck recovery count
+
+Stats are printed every 5 seconds (if DEBUG_MODE = true)
+
+========================================

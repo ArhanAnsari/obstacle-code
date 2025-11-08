@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#line 1 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
 #include <Servo.h>
 #define trigPin 8
 #define echoPin 11
@@ -54,6 +56,35 @@ const int SENSOR_SAMPLES = 3;     // Keep at 3 samples
 // --- Debug mode ---
 const bool DEBUG_MODE = true;
 
+#line 57 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void setup();
+#line 89 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void loop();
+#line 143 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+int measureDistance();
+#line 161 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+int lookRight();
+#line 169 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+int lookLeft();
+#line 178 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void moveForward();
+#line 187 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void moveForwardSmooth();
+#line 196 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void moveBackward();
+#line 205 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void turnLeft();
+#line 214 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void turnRight();
+#line 223 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void stopCar();
+#line 233 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void beep(int duration);
+#line 240 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void checkBatteryLevel();
+#line 282 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
+void printRobotStats();
+#line 57 "C:\\Users\\SRHS\\Downloads\\obstable_code\\obstable_code.ino"
 void setup() {
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
